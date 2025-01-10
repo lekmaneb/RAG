@@ -60,6 +60,9 @@ top_k_sentences = [docs[i] for i in tok_k_idx_bis]
 # del query_embeddings
 # del similarities
 
+# pipi
+
+
 messages = [
     {"role": "system", "content": f"You have this context : {top_k_sentences}; answer the following question but you can only use the context i gave you before, not your informations."},
     {"role": "user", "content": "What does Malek like?"},
