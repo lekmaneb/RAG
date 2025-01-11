@@ -1,0 +1,41 @@
+- contexte:
+	- c'est quoi un llm ?
+	- comment le llm peut apprendre des nouvelles infos (à partir de nos documents) 
+	  lister des méthodes : finetuning, context window... et rag
+	- d'où vient le rag ?
+	  rapide intro sur le rag
+	  pourquoi le rag et pas directement dans un llm
+	- 
+
+- le rag en détail:
+	- document splitting
+	  pourquoi on split, comment on split, types split par rapport aux documents qu'on a...
+	  parler du chunk, chunk_size et du chunk_overlap : définition, pourquoi...
+	  recursive splitting : expliquer avec les séparateurs et donner un exemple quand c'est
+				fait n'importe comment
+	  
+- encodage des splits:
+	- que va-t-on faire ici : le but de cette partie va être de pouvoir comparer chaque chunk avec
+	  la question que l'on va poser au RAG
+	- comment va-t-on comparer : on va utiliser un modèle d'embedding: parler du modèle et de ses
+				     caractéristiques, quelle méthode pour la comparaison...
+	- sélection des k meilleurs splits
+
+- passage au LLM:
+	- choix du llm (nb de params, taille...), essai avec d'autres llm mais limitations avec nos gpu bg
+	  llama avec 7B params, phi avec 3.5B, mais le mieux c'est qwen avec 1.5B params pas trop rempli
+	  le gpu en mémoire
+	- le llm reçoit la question de base, ainsi que les k meilleurs splits (au sens de la similarité) 
+	  sous la forme d'un contexte pour les k meilleurs splits et d'une question auquel il doit
+	  répondre. Le llm choisi lui même à partir du contexte les infos les plus importantes qui
+	  pourront répondre à la question. On reçoit ensuite une réponse du LLM
+
+- résultats obtenus:
+	- base de donnée livre : questions réponses
+	- base de donnée term and agreement : questions réponses
+	- (peut être musique et faire de bons exemple pour la diapo avec des sites)
+
+- démo en direct
+
+- conclusion: 
+	- exemple d'application du RAG et améliorations.
