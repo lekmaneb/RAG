@@ -10,6 +10,7 @@ from langchain_community.vectorstores import Chroma
 from langchain.schema import Document
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+import os
 import sys
 import time
 
@@ -35,20 +36,34 @@ except:
 
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=1500,
-    chunk_overlap=150
+    chunk_overlap=150,
+    separators=["\n\n", "\n", " ", ""]
 )
 
 splits = text_splitter.split_text(text)
 
 documents = [Document(page_content=split) for split in splits]
 
-# persist_directory = "docs/chroma/"
+# remove all punctuation from the link to use it as a directory name
+persist_directory = f"docs/chroma/{link.replace('https://', '').replace('http://', '').replace('/', '')}"
 
-vectordb = Chroma.from_documents(
-    documents=documents,
-    embedding=embedding_model.embedding_model,
-    # persist_directory=persist_directory
-)
+# check if the vector database already exists
+if os.path.exists(persist_directory):
+    # If the folder exists, we attempt to load the existing DB
+    vectordb = Chroma(
+        persist_directory=persist_directory,
+        embedding_function=embedding_model.embedding_model
+    )
+    print(f"Loaded existing Chroma DB from {persist_directory}")
+else:
+    # Otherwise, we create a new DB from the documents
+    vectordb = Chroma.from_documents(
+        documents=documents,
+        embedding=embedding_model.embedding_model,
+        persist_directory=persist_directory
+    )
+    vectordb.persist()  # Persist to disk
+    print(f"Created and saved new Chroma DB at {persist_directory}")
 
 # Build prompt
 template = """Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. Use three sentences maximum. Keep the answer as concise as possible. Don't give in any case an explanation of your answer. Don't give any additional information. Just answer the question. 
