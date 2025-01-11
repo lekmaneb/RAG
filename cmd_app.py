@@ -71,6 +71,11 @@ while True:
     question = input()
     print("\n")
 
+    while question == "":
+        print("Please enter a valid question")
+        question = input()
+        print("\n")
+
     result = qa_chain({"query": question})
 
     #show only the answer, not context before it
