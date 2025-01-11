@@ -30,7 +30,7 @@ if __name__ == "__main__":
         user_input = input("You: ")
 
         # Generate a response
-        response = llm.predict(user_input)
+        response = llm(user_input)
 
         # Print the response
         print(f"Qwen: {response}")
