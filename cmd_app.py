@@ -23,7 +23,15 @@ def text_extractor(url):
 
 link = input("Enter the link of something: ")
 
-text = text_extractor(link)
+while not link.startswith("http"):
+    print("Please enter a valid link")
+    link = input("Enter the link of something: ")
+
+try:
+    text = text_extractor(link)
+except:
+    print("Error while trying to extract text from the link, restart the program and try again")
+    sys.exit()
 
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=1500,
@@ -55,11 +63,12 @@ qa_chain = RetrievalQA.from_chain_type(
     retriever=vectordb.as_retriever(search_kwargs={"k": 10}),
     chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
 )
+
 while True:
+
     print("\n")
     print("Enter your question: ")
     question = input()
-    # jump line
     print("\n")
 
     result = qa_chain({"query": question})
