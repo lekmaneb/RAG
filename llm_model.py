@@ -23,3 +23,14 @@ hf_pipeline = pipeline(
 
 # Wrap the pipeline in a HuggingFacePipeline
 llm = HuggingFacePipeline(pipeline=hf_pipeline)
+
+if __name__ == "__main__":
+    while True:
+        # Get user input
+        user_input = input("You: ")
+
+        # Generate a response
+        response = llm.predict(user_input)
+
+        # Print the response
+        print(f"Qwen: {response}")
