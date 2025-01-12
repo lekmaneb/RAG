@@ -25,7 +25,15 @@ for idx, row in music_df.iterrows():
 documents = [Document(page_content=split) for split in splits]
 
 # remove all punctuation from the link to use it as a directory name
-persist_directory = "docs/chroma_small/music_data"
+if embedding_model.model_encode_name == "sentence-transformers/all-MiniLM-L6-v2":
+    persist_directory = "docs/chroma_small/music_data"
+elif embedding_model.model_encode_name == "mixedbread-ai/mxbai-embed-large-v1":
+    persist_directory = "docs/chroma/music_data"
+elif embedding_model.model_encode_name == "ibm-granite/granite-embedding-125m-english":
+    persist_directory = "docs/chroma_medium/music_data"
+else:
+    print("Please use a valid model name")
+    sys.exit()
 
 # check if the vector database already exists
 if os.path.exists(persist_directory):
