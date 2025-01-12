@@ -11,6 +11,8 @@ hf_model_name = "Qwen/Qwen2.5-1.5B-Instruct"
 tokenizer = AutoTokenizer.from_pretrained(hf_model_name)
 model = AutoModelForCausalLM.from_pretrained(hf_model_name).to("cuda")  # Move model to GPU
 
+
+
 # Create a pipeline for text generation with GPU support
 hf_pipeline = pipeline(
     "text-generation",
@@ -23,7 +25,7 @@ hf_pipeline = pipeline(
 
 # Wrap the pipeline in a HuggingFacePipeline
 llm = HuggingFacePipeline(pipeline=hf_pipeline)
-
+print("LLM Model:", hf_model_name)
 if __name__ == "__main__":
     while True:
         # Get user input

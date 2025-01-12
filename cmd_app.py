@@ -45,7 +45,17 @@ splits = text_splitter.split_text(text)
 documents = [Document(page_content=split) for split in splits]
 
 # remove all punctuation from the link to use it as a directory name
-persist_directory = f"docs/chroma/{link.replace('https://', '').replace('http://', '').replace('/', '')}"
+# persist_directory = f"docs/chroma/{link.replace('https://', '').replace('http://', '').replace('/', '')}"
+
+if embedding_model.model_encode_name == "sentence-transformers/all-MiniLM-L6-v2":
+    persist_directory = f"docs/chroma_small/{link.replace('https://', '').replace('http://', '').replace('/', '')}"
+elif embedding_model.model_encode_name == "mixedbread-ai/mxbai-embed-large-v1":
+    persist_directory = f"docs/chroma/{link.replace('https://', '').replace('http://', '').replace('/', '')}"
+elif embedding_model.model_encode_name == "ibm-granite/granite-embedding-125m-english":
+    persist_directory = f"docs/chroma_medium/{link.replace('https://', '').replace('http://', '').replace('/', '')}"
+else:
+    print("Please use a valid model name")
+    sys.exit()
 
 # for small embedding model :
 # persist_directory = f"docs/chroma_small/{link.replace('https://', '').replace('http://', '').replace('/', '')}"
