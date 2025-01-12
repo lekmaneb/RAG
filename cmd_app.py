@@ -47,6 +47,9 @@ documents = [Document(page_content=split) for split in splits]
 # remove all punctuation from the link to use it as a directory name
 persist_directory = f"docs/chroma/{link.replace('https://', '').replace('http://', '').replace('/', '')}"
 
+# for small embedding model :
+# persist_directory = f"docs/chroma_small/{link.replace('https://', '').replace('http://', '').replace('/', '')}"
+
 # check if the vector database already exists
 if os.path.exists(persist_directory):
     # If the folder exists, we attempt to load the existing DB
