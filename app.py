@@ -65,7 +65,7 @@ QA_CHAIN_PROMPT = PromptTemplate.from_template(template)# Run chain
 qa_chain = RetrievalQA.from_chain_type(
     llm_model.llm,
     return_source_documents=True,
-    retriever=vectordb.as_retriever(search_kwargs={"k": 10}),
+    retriever=vectordb.as_retriever(search_kwargs={"k": 15}),
     chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
 )
 
