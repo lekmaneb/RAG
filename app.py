@@ -17,7 +17,7 @@ import sys
 import time
 import pandas as pd
 
-music_df = pd.read_csv('all_music_data.csv')
+music_df = pd.read_csv('music_data/all_music_data.csv')
 
 splits = []
 for idx, row in music_df.iterrows():
