@@ -113,4 +113,4 @@ def ask():
 if __name__ == "__main__":
     # app.run(debug=False)
     # allow local network access
-    app.run(debug=False, host='127.0.0.1', port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=False)
