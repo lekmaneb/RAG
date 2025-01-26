@@ -17,7 +17,7 @@ import sys
 import time
 import pandas as pd
 
-music_df = pd.read_csv('music_data.csv')
+music_df = pd.read_csv('all_music_data.csv')
 
 splits = []
 for idx, row in music_df.iterrows():
@@ -27,11 +27,11 @@ documents = [Document(page_content=split) for split in splits]
 
 # remove all punctuation from the link to use it as a directory name
 if embedding_model.model_encode_name == "sentence-transformers/all-MiniLM-L6-v2":
-    persist_directory = "docs/chroma_small/music_data"
+    persist_directory = "docs/chroma_small/all_music_data"
 elif embedding_model.model_encode_name == "mixedbread-ai/mxbai-embed-large-v1":
-    persist_directory = "docs/chroma/music_data"
+    persist_directory = "docs/chroma/all_music_data"
 elif embedding_model.model_encode_name == "ibm-granite/granite-embedding-125m-english":
-    persist_directory = "docs/chroma_medium/music_data"
+    persist_directory = "docs/chroma_medium/all_music_data"
 else:
     print("Please use a valid model name")
     sys.exit()
@@ -55,9 +55,10 @@ else:
     print(f"Created and saved new Chroma DB at {persist_directory}")
 
 # Build prompt
-template = """Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. Answer only by giving the name of the song and the artist of the song you choosed. 
+template = """Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer. 
 {context}
-Question: {question}
+Question: {question}.
+Answer the previous question only by giving only one song, and giving the name of the song and the artist of the song you choosed as this : "Name of the song - Artist".
 Answer:"""
 QA_CHAIN_PROMPT = PromptTemplate.from_template(template)# Run chain
 
@@ -110,4 +111,4 @@ def ask():
     return jsonify({"answer": reponse_llm})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
