@@ -4,33 +4,94 @@
   <meta charset="UTF-8" />
   <title>RAG</title>
   <style>
-    /* Styles basiques pour la disposition du chat */
-    body {
+    /* Reset and base styles */
+    html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
+    }
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
       height: 100vh;
+      transition: background-color 0.3s, color 0.3s;
     }
-/* add a bar to the top with content : "Chat avec notre MusicRAG" */
-    body::before {
-      content: "Chat avec notre MusicRAG";
-      /* dark grey */
-      background: #292727;
-      /* background: #007bff; */
+
+    /* Dark Mode (default) */
+    body.dark-mode {
+      background-color: #333;
+      color: #fff;
+    }
+
+    /* Light Mode */
+    body.light-mode {
+      background-color: #f2f2f2;
+      color: #000;
+    }
+
+    /* === Top Bar === */
+    #top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+    }
+
+    /* Top bar in Dark Mode */
+    body.dark-mode #top-bar {
+      background-color: #292727;
       color: white;
-      padding: 10px;
-      text-align: center;
     }
-    
+
+    /* Top bar in Light Mode */
+    body.light-mode #top-bar {
+      background-color: #007bff;
+      color: white;
+    }
+
+    /* Mode switch button */
+    #mode-switch-btn {
+      cursor: pointer;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Button in Dark Mode */
+    body.dark-mode #mode-switch-btn {
+      background-color: #444;
+      color: #fff;
+    }
+
+    /* Button in Light Mode */
+    body.light-mode #mode-switch-btn {
+      background-color: #333;
+      color: #fff;
+    }
+
+    /* Chat container */
     #chat-container {
       flex: 1;
       overflow-y: auto;
       padding: 10px;
-      /* background: #f5f5f5; */
-      /* dark grey background */
-      background: #333;
+      transition: background-color 0.3s;
+    }
+
+    /* Dark mode chat container background */
+    body.dark-mode #chat-container {
+      background-color: #333;
+    }
+
+    /* Light mode chat container background */
+    body.light-mode #chat-container {
+      background-color: #f5f5f5;
     }
 
     .message {
@@ -39,26 +100,55 @@
       clear: both;
       padding: 8px 12px;
       border-radius: 8px;
-      color: white;
+      word-wrap: break-word; /* Prevent long words from overflowing */
     }
 
-    .user-msg {
-      /* blue background */
-      background-color: #0037eb;
-      /* background-color: #d5f5d5; */
+    /* Bot messages in dark mode */
+    body.dark-mode .bot-msg {
+      background-color: #292727;
+      color: #fff;
+      float: left;
+    }
+
+    /* Bot messages in light mode */
+    body.light-mode .bot-msg {
+      background-color: #ddd;
+      color: #000;
+      float: left;
+    }
+
+    /* User messages in dark mode */
+    body.dark-mode .user-msg {
+      background-color: #0037eb; 
+      color: #fff;
       float: right;
       text-align: right;
     }
 
-    .bot-msg {
-      background-color: #292727;
-      float: left;
+    /* User messages in light mode */
+    body.light-mode .user-msg {
+      background-color: #007bff; 
+      color: #fff;
+      float: right;
+      text-align: right;
     }
 
+    /* Input container */
     #input-container {
       display: flex;
       border-top: 1px solid #5c5c5c;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Dark mode input container */
+    body.dark-mode #input-container {
       background-color: #292727;
+    }
+
+    /* Light mode input container */
+    body.light-mode #input-container {
+      background-color: #eee;
+      border-top-color: #ccc;
     }
 
     #user-input {
@@ -67,23 +157,43 @@
       padding: 10px;
       font-size: 16px;
       outline: none;
+      color: inherit;
+      background: inherit;
     }
 
     #send-btn {
-      background-color: #0037eb;
-      color: white;
       border: none;
       padding: 0 20px;
       cursor: pointer;
       font-size: 16px;
+      transition: background-color 0.3s, color 0.3s;
     }
 
-    #send-btn:hover {
-      background-color: #0037eb;
+    /* Dark mode send button */
+    body.dark-mode #send-btn {
+      background-color: #0037eb; 
+      color: #fff;
+    }
+
+    /* Light mode send button */
+    body.light-mode #send-btn {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    #send-btn:hover,
+    #mode-switch-btn:hover {
+      opacity: 0.8;
     }
   </style>
 </head>
-<body>
+<body class="dark-mode">
+  <!-- Top bar with title and mode switch button -->
+  <div id="top-bar">
+    <div>Chat avec notre MusicRAG</div>
+    <button id="mode-switch-btn">Switch to Light Mode</button>
+  </div>
+
   <div id="chat-container">
     <!-- Les messages seront injectés ici en JavaScript -->
   </div>
@@ -102,8 +212,9 @@
     const chatContainer = document.getElementById("chat-container");
     const userInput = document.getElementById("user-input");
     const sendBtn = document.getElementById("send-btn");
+    const modeSwitchBtn = document.getElementById("mode-switch-btn");
 
-    // Fonction pour ajouter un message dans le chat
+    // Function to add a message to the chat
     function addMessage(text, sender = "bot") {
       const messageDiv = document.createElement("div");
       messageDiv.classList.add("message");
@@ -115,20 +226,20 @@
       }
       chatContainer.appendChild(messageDiv);
 
-      // Faire défiler vers le bas
+      // Scroll to bottom
       chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
-    // Gestion du bouton "Envoyer"
+    // Send button event
     sendBtn.addEventListener("click", () => {
       const question = userInput.value.trim();
       if (question === "") return;
 
-      // On ajoute le message utilisateur
+      // Add the user message
       addMessage(question, "user");
       userInput.value = "";
 
-      // On envoie la question au serveur
+      // Send question to server (dummy fetch here)
       fetch("/ask", {
         method: "POST",
         headers: {
@@ -139,7 +250,7 @@
         .then((response) => response.json())
         .then((data) => {
           if (data.answer) {
-            // On ajoute la réponse du LLM
+            // Add the LLM response
             addMessage(data.answer, "bot");
           } else if (data.error) {
             addMessage("Erreur: " + data.error, "bot");
@@ -151,10 +262,20 @@
         });
     });
 
-    // Envoi via la touche "Entrée"
+    // Send on Enter
     userInput.addEventListener("keyup", function (e) {
       if (e.key === "Enter") {
         sendBtn.click();
+      }
+    });
+
+    // Theme switch
+    modeSwitchBtn.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode");
+      if (document.body.classList.contains("light-mode")) {
+        modeSwitchBtn.textContent = "Switch to Dark Mode";
+      } else {
+        modeSwitchBtn.textContent = "Switch to Light Mode";
       }
     });
   </script>
